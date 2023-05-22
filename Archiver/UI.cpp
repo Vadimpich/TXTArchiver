@@ -102,6 +102,7 @@ void UI::menuDecode() {
     arch = Archiver(inp, true);
     string ext = arch.archExtension();
     string filename = generateUniqueFilename(removeExtension(inp) + ext);
+    cout << ((ru) ? RU_MSG_RUNNING : EN_MSG_RUNNING) << endl;
     bool err = false;
     string encoded = arch.decode(err);
     if (err) {
@@ -141,6 +142,7 @@ void UI::menuEncode() {
             }
             arch = Archiver(inp, true);
             string filename = generateUniqueFilename(removeExtension(inp) + ".txtarch");
+            cout << ((ru) ? RU_MSG_RUNNING : EN_MSG_RUNNING) << endl;
             string encoded = arch.encode();
             ofstream fout(filename, ios::binary);
             fout << encoded;
@@ -162,6 +164,7 @@ void UI::menuEncode() {
             getline(cin, inp);
             arch = Archiver(inp);
             string filename = generateUniqueFilename("archived.txtarch");
+            cout << ((ru) ? RU_MSG_RUNNING : EN_MSG_RUNNING) << endl;
             string encoded = arch.encode();
             ofstream fout(filename, ios::binary);
             fout << encoded;

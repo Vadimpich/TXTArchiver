@@ -67,3 +67,5 @@ const std::string RU_MSG_NO_FILE = "ОШИБКА: Файл с таким наз�
 const std::string EN_MSG_NO_FILE = "ERROR: A file with this name was not found.\n";
 const std::string RU_MSG_RATIO = "Степень сжатия: ";
 const std::string EN_MSG_RATIO = "Compression ratio: ";
+const std::string RU_MSG_RUNNING = "Файл найден, выполняется. Пожалуйста, подождите.";
+const std::string EN_MSG_RUNNING = "File found, running. Please wait.";
