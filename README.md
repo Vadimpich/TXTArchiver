@@ -1,4 +1,4 @@
-![GitHub top language](https://img.shields.io/github/languages/top/Vadimpich/TXTArchiver) ![GitHub last commit](https://img.shields.io/github/last-commit/Vadimpich/TXTArchiver)
+![GitHub top language](https://img.shields.io/github/languages/top/Vadimpich/TXTArchiver) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Vadimpich/TXTArchiver/cmake.yml) ![GitHub last commit](https://img.shields.io/github/last-commit/Vadimpich/TXTArchiver)
 # TXTArchiver
 TXTArchiver allows you to compress files using the Huffman method and variable-length code tables.
 
