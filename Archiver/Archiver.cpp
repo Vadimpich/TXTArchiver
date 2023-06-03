@@ -59,16 +59,6 @@ void Archiver::sepCodes() {
     data = data.substr(data.find('\n') + 1);
 }
 
-// Поиско символа по коду
-int Archiver::findSym(const std::string &code) {
-    for (const auto &pair: codes) {
-        if (pair.second == code) {
-            return int(pair.first);
-        }
-    }
-    return 9999;
-};
-
 string decimalToBinary(int decimal) {
     if (decimal == 0)
         return "0";
