@@ -36,6 +36,13 @@ void Archiver::genCodes() {
     hTree.buildHuffmanTree(codes);
 }
 
+int Archiver::countCodes() {
+    if (codes.empty()) {
+        sepCodes();
+    }
+    return int(codes.size());
+}
+
 string Archiver::strCodes() {
     stringstream ss;
     for (const auto &pair: codes) {
@@ -120,15 +127,15 @@ std::string Archiver::encode() {
     for (const char c: data) {
         binData += codes[c];
     }
-    for (int i = 0; i < binData.length(); i += 6) {
-        string oneByte = binData.substr(i, 6);
-        encodedData += char(binaryToDecimal(oneByte) + 48);
+    for (int i = 0; i < binData.length(); i += 7) {
+        string oneByte = binData.substr(i, 7);
+        encodedData += char(binaryToDecimal(oneByte));
     }
     return encodedData;
 }
 
 string addLeadingZeros(string str) {
-    size_t numZerosToAdd = 6 - str.length();
+    size_t numZerosToAdd = 7 - str.length();
     if (numZerosToAdd <= 0)
         return str;
     string result;
@@ -141,25 +148,33 @@ string addLeadingZeros(string str) {
 
 // Разархивация текста
 std::string Archiver::decode(bool &err) {
-    sepCodes();
+    if (codes.empty()) {
+        sepCodes();
+    }
     string decodedData;
     string binData;
     size_t t = data.length();
     for (int i = 0; i < data.length(); i++) {
         char c = data[i];
-        string binCode = decimalToBinary(int(c) - 48);
+        string binCode = decimalToBinary(int(c));
         if (i != data.length() - 1) {
             binCode = addLeadingZeros(binCode);
         }
         binData += binCode;
     }
+
+    map<string, char> reversedCodes;
+    for (const auto &pair: codes) {
+        reversedCodes[pair.second] = pair.first;
+    }
+
     int n = 0;
     for (int i = 0; i < binData.length();) {
         n++;
         string code = binData.substr(i, n);
-        int ic = findSym(code);
-        if (ic != 9999) {
-            decodedData += char(ic);
+        if (reversedCodes.count(code)) {
+            char c = reversedCodes[code];
+            decodedData += c;
             i += n;
             n = 0;
         } else if (i + n > binData.length()) {

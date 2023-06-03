@@ -26,6 +26,8 @@ public:
 
     explicit Archiver(const std::string &s, bool fromfile = false);
 
+    int countCodes();
+
     std::string encode();
 
     std::string archExtension();

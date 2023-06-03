@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cmath>
+//#include <ctime>
 
 #include "UI.h"
 #include "Archiver.h"
@@ -48,7 +50,7 @@ void UI::menuMain() {
             break;
         case 3:
             return;
-    };
+    }
 }
 
 bool fileExists(const string &filename) {
@@ -72,7 +74,7 @@ string generateUniqueFilename(const string &filename) {
     while (fileExists(uniqueFilename + "_" + to_string(counter) + extension)) {
         counter++;
     }
-    return uniqueFilename + "_" + std::to_string(counter) + extension;
+    return uniqueFilename + "_" + to_string(counter) + extension;
 }
 
 // Название файла без расширения
@@ -82,6 +84,59 @@ string removeExtension(const string &filename) {
         return filename.substr(0, dotIndex);
     }
     return filename;
+}
+
+streampos getFileSize(const string &filename) {
+    ifstream file(filename, ifstream::ate | ifstream::binary);
+    if (!file) {
+        return -1;
+    }
+    streampos fileSize = file.tellg();
+    file.close();
+    return fileSize;
+}
+
+// Рассчёт примерного времени деархивации
+// (коэффициенты аппроксимированы методом наименьших квадратов)
+long long calcDecodeTime(long long sizeSyms) {
+    double a = -9.91531;
+    double b = 1.25104;
+    auto decompressionTime = static_cast<long long>(exp(a + b * log(sizeSyms)));
+    return decompressionTime;
+}
+
+// Форматирование времени
+string msToTimeString(long long ms) {
+    long long hours = ms / (1000 * 60 * 60);
+    ms %= (1000 * 60 * 60);
+    long long minutes = ms / (1000 * 60);
+    ms %= (1000 * 60);
+    long long seconds = ms / 1000;
+    ms %= 1000;
+    char buffer[12];
+    if (hours > 0) {
+        snprintf(
+                buffer,
+                sizeof(buffer),
+                "%02lldh %02lldm %02lld.%03llds",
+                hours, minutes, seconds, ms
+        );
+    } else if (minutes > 0) {
+        snprintf(
+                buffer,
+                sizeof(buffer),
+                "%02lldm %02lld.%03llds",
+                minutes, seconds, ms
+        );
+    } else {
+        snprintf(
+                buffer,
+                sizeof(buffer),
+                "%02lld.%03llds",
+                seconds, ms
+        );
+    }
+    return {buffer};
 }
 
 // Меню разархивации
@@ -99,12 +154,19 @@ void UI::menuDecode() {
         menuMain();
         return;
     }
+    auto fsize = getFileSize(inp);
     arch = Archiver(inp, true);
     string ext = arch.archExtension();
     string filename = generateUniqueFilename(removeExtension(inp) + ext);
     cout << ((ru) ? RU_MSG_RUNNING : EN_MSG_RUNNING) << endl;
+    int count = arch.countCodes();
+    string expectedTime = msToTimeString(calcDecodeTime(fsize));
+    cout << ((ru) ? RU_MSG_DECODE_TIME : EN_MSG_DECODE_TIME) << expectedTime << endl;
     bool err = false;
+    //long long start = clock();
     string encoded = arch.decode(err);
+    //long long end = clock();
+    //cout << "Runtime: " << msToTimeString(end - start) << endl;
     if (err) {
         cout << ((ru) ? RU_MSG_DECODE_CORRUPTED : EN_MSG_DECODE_CORRUPTED) << endl;
     }
@@ -112,16 +174,6 @@ void UI::menuDecode() {
     fout << encoded;
     fout.close();
     cout << ((ru) ? RU_MSG_FILE_SAVED : EN_MSG_FILE_SAVED) << filename << endl;
-}
-
-streampos getFileSize(const string &filename) {
-    ifstream file(filename, ifstream::ate | ifstream::binary);
-    if (!file) {
-        return -1;
-    }
-    std::streampos fileSize = file.tellg();
-    file.close();
-    return fileSize;
 }
 
 // Меню архивации
@@ -164,7 +216,6 @@ void UI::menuEncode() {
             getline(cin, inp);
             arch = Archiver(inp);
             string filename = generateUniqueFilename("archived.txtarch");
-            cout << ((ru) ? RU_MSG_RUNNING : EN_MSG_RUNNING) << endl;
             string encoded = arch.encode();
             ofstream fout(filename, ios::binary);
             fout << encoded;
@@ -175,7 +226,7 @@ void UI::menuEncode() {
         case 3:
             menuMain();
             break;
-    };
+    }
 }
 
 UI::UI(bool ru) {
