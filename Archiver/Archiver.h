@@ -17,14 +17,12 @@ private:
 
     std::string strCodes();
 
-    int findSym(const std::string &code);
+    void sepCodes();
 
 public:
     Archiver();
 
     explicit Archiver(const std::string &s, bool fromfile = false);
-
-    int countCodes();
 
     std::string encode();
 
