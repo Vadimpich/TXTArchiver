@@ -159,7 +159,6 @@ void UI::menuDecode() {
     string ext = arch.archExtension();
     string filename = generateUniqueFilename(removeExtension(inp) + ext);
     cout << ((ru) ? RU_MSG_RUNNING : EN_MSG_RUNNING) << endl;
-    int count = arch.countCodes();
     string expectedTime = msToTimeString(calcDecodeTime(fsize));
     cout << ((ru) ? RU_MSG_DECODE_TIME : EN_MSG_DECODE_TIME) << expectedTime << endl;
     bool err = false;

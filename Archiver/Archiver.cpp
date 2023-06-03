@@ -36,13 +36,6 @@ void Archiver::genCodes() {
     hTree.buildHuffmanTree(codes);
 }
 
-int Archiver::countCodes() {
-    if (codes.empty()) {
-        sepCodes();
-    }
-    return int(codes.size());
-}
-
 string Archiver::strCodes() {
     stringstream ss;
     for (const auto &pair: codes) {

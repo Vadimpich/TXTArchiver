@@ -17,8 +17,6 @@ private:
 
     std::string strCodes();
 
-    void sepCodes();
-
     int findSym(const std::string &code);
 
 public:
